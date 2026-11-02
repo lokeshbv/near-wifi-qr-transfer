@@ -1,25 +1,39 @@
-# Near — Local Wi-Fi QR Transfer
+# Near
 
-Send files directly in either direction between a laptop and a phone, tablet, or another laptop over the same Wi-Fi/local network. Choose **Send to device** to download laptop files on a phone, or **Receive from phone** to upload phone files into the laptop's Downloads folder. Scan the QR code with the receiving device's camera or QR scanner.
+Send files between your computer and phone over the same Wi-Fi. Scan a QR code to download files to your phone, or upload files from your phone to your computer. Transfers stay on your local network; there is no cloud relay.
 
-## Supported setup
+## Quick start
 
-- **Host:** macOS, Windows, or Linux laptop/desktop with Node.js 20 or newer.
-- **Receiver:** a modern browser on Android, iPhone/iPad, or another laptop.
-- **Network:** both devices must be on the same reachable Wi-Fi/LAN. Guest Wi-Fi, client isolation, VPN routing, or firewall rules may block local device-to-device traffic.
-- The laptop hosting Near must remain awake and the app running until transfers finish. The actual file transfer stays on the local network; there is no cloud relay.
+1. Install [Node.js 20 or newer](https://nodejs.org/) on the computer that will host the transfer.
+2. Open Terminal (macOS/Linux) or PowerShell (Windows) in this project folder and run:
 
-## Run the host
+   ```sh
+   npm install
+   npm start
+   ```
 
-1. Install Node.js 20 or newer on the laptop that will host the files.
-2. In this folder, run `npm install` once.
-3. Run `npm start` and open `http://localhost:8787` on that laptop.
-4. Choose files to send, or choose **Receive from phone** and scan that QR code to upload files to the laptop.
+3. Open [http://localhost:8787](http://localhost:8787) on that computer.
+4. Choose files to send, or choose **Receive from phone** to upload files to the computer.
+5. Scan the QR code with your phone. Keep both devices on the same Wi-Fi until the transfer finishes.
 
-The address pill shows the host's LAN IP; click it to copy the address. If camera scanning is unavailable, use **Copy link** and open the link on the receiving device. On some networks, the receiving device may need to allow local-network access or the host app may need to be allowed through the computer's firewall.
+The app shows your computer's Wi-Fi address and lets you copy the link if scanning is unavailable. If the phone cannot connect, check that both devices are on the same network and allow Near through the computer's firewall. Guest Wi-Fi, VPNs, or router client isolation can block device-to-device connections.
 
-## Transfer behavior
+## Where received files go
 
-Each session expires after 30 minutes. **End transfer now** revokes the QR link and removes staged files for laptop-to-phone transfers. Phone-to-laptop uploads are saved with collision-safe names in `~/Downloads/Near Received`; ending that session prevents further uploads but keeps files already received. The total transfer limit is 2 GB. The interface defaults to dark glass mode, remembers the host's light/dark choice, and includes that choice in the QR link. Upload progress and short sound cues provide feedback; sounds can be muted with device/browser volume controls.
+Files uploaded from a phone are saved to `~/Downloads/Near Received` on the host computer. Existing files are kept; duplicate names get a number suffix. You can change the folder with the `NEAR_RECEIVE_DIR` environment variable.
 
-QR generation and the interface are local. The transfer uses HTTP on the trusted local network, so share the private QR link only with the intended recipient.
+## Privacy and limits
+
+- The app listens on the local network so nearby devices can connect. Only share a QR link with the intended recipient.
+- Each transfer link expires after 30 minutes. **End transfer now** revokes it.
+- A transfer can contain up to 2 GB of files.
+- Keep the host computer awake and the app running during a transfer.
+- The local network transfer uses HTTP and has no cloud relay. Use a trusted Wi-Fi network.
+
+## Development
+
+```sh
+npm run dev
+```
+
+The browser interface is served by the Node.js host; there is no separate frontend build step.
